@@ -95,3 +95,27 @@ This will find all `.zip` files within subdirectories of the `product` folder an
 -----
 
 **Pro-Tip**: Place the `upload.sh` file somewhere in your system's `PATH` (like `/usr/local/bin`) to call it from any directory without needing `./`.
+
+--------------------------------------------------------------------------------
+
+1.  **Di Server Baru:** Buat kunci SSH baru.
+
+    ```bash
+    ssh-keygen -t ed25519 -C "email-anda-di-server-baru@example.com"
+    ```
+
+    (Tekan Enter 3x untuk menerima default & tanpa passphrase).
+
+2.  **Di Server Baru:** Tampilkan kunci publik yang baru dibuat.
+
+    ```bash
+    cat ~/.ssh/id_ed25519.pub
+    ```
+
+3.  **Salin** seluruh teks kunci publik yang baru itu.
+
+4.  **Buka Akun SourceForge:** Pergi ke halaman [Account Settings \> SSH Keys](https://sourceforge.net/auth/shell_services).
+
+5.  **Tempel (Paste)** kunci publik *baru* itu di kotak teks, **di bawah kunci Anda yang lama**. Lalu klik "Add".
+
+Selesai. Sekarang server baru Anda juga dipercaya oleh SourceForge dan bisa menjalankan skrip `upload.sh` tanpa masalah.
