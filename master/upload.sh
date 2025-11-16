@@ -4,10 +4,19 @@
 # ❗️ GANTI DENGAN API KEY PIXELDRAIN ANDA ❗️
 PIXELDRAIN_API_KEY="e2782305-178a-4564-bcf3-12c37669ef13"
 
+# ❗️ GANTI DENGAN KONFIGURASI SOURCEFORGE ANDA ❗️
+# Ganti 'namauser' dan 'namaproyek' Anda di SourceForge
+SOURCEFORGE_USER="manusiabiasa"
+SOURCEFORGE_PROJECT="aosp-byimsleep"
+# Path di server SourceForge (selalu mulai dengan /home/pfs/public/)
+SOURCEFORGE_FOLDER_PATH="/home/pfs/public/MyReleases" 
+
 # ==== Check dependencies ====
-for cmd in curl jq; do
+# Menambahkan 'scp' ke pemeriksaan
+for cmd in curl jq scp; do
     if ! command -v "$cmd" >/dev/null 2>&1; then
-        echo "❌ '$cmd' is not installed. Please install it using 'sudo apt install $cmd'"
+        echo "❌ '$cmd' is not installed. Please install it."
+        echo "   (sudo apt install $cmd)"
         exit 1
     fi
 done
@@ -37,7 +46,7 @@ progress_spinner() {
         printf "\r⏳ Uploading... ${spin:$i:1}"
         sleep 0.1
     done
-    printf "\r✅ Done.             \n"
+    printf "\r✅ Done.                 \n"
 }
 
 # ==== Upload each file ====
@@ -78,6 +87,16 @@ for FILE in "$@"; do
     else
         echo "❌ Upload to Gofile failed:"
         cat /tmp/gofileresp.json
+    fi
+
+    # === Upload to SourceForge (via scp) ===
+    echo "→ SourceForge (scp):"
+    # scp akan menampilkan progresnya sendiri
+    scp "$FILE" "${SOURCEFORGE_USER},${SOURCEFORGE_PROJECT}@frs.sourceforge.net:${SOURCEFORGE_FOLDER_PATH}/"
+    if [ $? -eq 0 ]; then
+        echo "✅ SourceForge: Upload successful (Path: ${SOURCEFORGE_FOLDER_PATH})"
+    else
+        echo "❌ Upload to SourceForge failed."
     fi
 
 done
