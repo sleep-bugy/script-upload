@@ -30,7 +30,7 @@ sudo apt install curl jq scp
 1.  Download the script from the repository:
 
     ```bash
-    wget [https://raw.githubusercontent.com/sleep-bugy/script-upload/refs/heads/main/upload.sh
+    wget https://raw.githubusercontent.com/sleep-bugy/script-upload/refs/heads/main/upload.sh
     ```
 
 2.  Make the script executable:
