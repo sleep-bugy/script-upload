@@ -9,7 +9,7 @@ PIXELDRAIN_API_KEY="e2782305-178a-4564-bcf3-12c37669ef13"
 SOURCEFORGE_USER="manusiabiasa"
 SOURCEFORGE_PROJECT="aosp-byimsleep"
 # Path di server SourceForge (selalu mulai dengan /home/pfs/public/)
-SOURCEFORGE_FOLDER_PATH="/home/pfs/public/MyReleases" 
+SOURCEFORGE_FOLDER_PATH="/home/pfs/public/Releases" 
 
 # ==== Check dependencies ====
 # Dependensi: curl (internet), jq (parsing json), scp (sourceforge)
