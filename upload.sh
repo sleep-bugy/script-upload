@@ -114,7 +114,7 @@ for FILE in "$@"; do
     # === Upload to SourceForge (via scp) ===
     echo "→ SourceForge (scp):"
     # scp akan menampilkan progresnya sendiri
-    scp "$FILE" "${SOURCEFORGE_USER},${SOURCEFORGE_PROJECT}@frs.sourceforge.net:${SOURCEFORGE_FOLDER_PATH}/"
+    scp "$FILE" "${SOURCEFORGE_USER},${SOURCEFORGE_PROJECT}@frs.sourceforge.net:${SOURCEFORGE_FOLDER_PATH}/$(basename "$FILE")"
     if [ $? -eq 0 ]; then
         echo "✅ SourceForge: Upload successful (Path: ${SOURCEFORGE_FOLDER_PATH})"
     else
