@@ -6,32 +6,32 @@ This script is designed to save time by automating the upload process to multipl
 
 ## ✨ Features
 
-  * 💧 **Pixeldrain**: Uploads files using your API key.
-  * 📄 **Gofile**: Automatically finds the best available server and uploads.
-  * ⚡ **Ranoz.gg**: Uploads via their high-speed API.
-  * 📦 **SourceForge**: Uploads release files to your project's File Release System (FRS) using `scp`.
+* 💧 **Pixeldrain**: Uploads files using your API key.
+* 📄 **Gofile**: Automatically finds the best available server and uploads.
+* ⚡ **Ranoz.gg**: Uploads via their high-speed API.
+* 📦 **SourceForge**: Uploads release files to your project's Shell service using `scp`.
 
 ## ⚙️ Prerequisites
 
 Before running the script, ensure you have the necessary tools installed.
 
-  * **`curl`**: For making web requests.
-  * **`jq`**: For parsing JSON data from API responses.
-  * **`scp`**: (Part of `openssh-client`) For secure file transfers to SourceForge.
+* **`curl`**: For making web requests.
+* **`jq`**: For parsing JSON data from API responses.
+* **`scp`**: (Part of `openssh-client`) For secure file transfers to SourceForge.
 
 You can install them on a Debian/Ubuntu-based system with:
 
 ```bash
 sudo apt update
 sudo apt install curl jq scp
-```
+````
 
 ## 📥 Installation
 
-1.  Download the script from the repository:
+1.  Download the script:
 
     ```bash
-    wget https://raw.githubusercontent.com/sleep-bugy/script-upload/refs/heads/main/master/upload.sh
+    wget [https://raw.githubusercontent.com/sleep-bugy/script-upload/refs/heads/main/master/upload.sh](https://raw.githubusercontent.com/sleep-bugy/script-upload/refs/heads/main/master/upload.sh)
     ```
 
 2.  Make the script executable:
@@ -48,25 +48,23 @@ This is the **most important step**. Open the `upload.sh` file with your favorit
 # ==== Configuration ====
 
 # ❗️ REPLACE WITH YOUR PIXELDRAIN API KEY ❗️
-# (Get from: https://pixeldrain.com/user/api_keys)
+# (Get from: [https://pixeldrain.com/user/api_keys](https://pixeldrain.com/user/api_keys))
 PIXELDRAIN_API_KEY="YOUR_API_KEY_HERE"
 
 # ❗️ REPLACE WITH YOUR SOURCEFORGE CONFIG ❗️
 # (This is your SourceForge SSH username)
 SOURCEFORGE_USER="your_username"
 
-# (This is your project's UNIX name, all lowercase)
-SOURCEFORGE_PROJECT="your_project_name"
-
-# (Folder path on SourceForge. Change 'MyReleases' if needed)
-SOURCEFORGE_FOLDER_PATH="/home/pfs/public/MyReleases" 
+# (This is the FULL path to your project's upload folder)
+# Format: /home/frs/project/YOUR_PROJECT_NAME/YOUR_FOLDER_NAME
+SOURCEFORGE_SHELL_PATH="/home/frs/project/aosp-byimsleep/Releases"
 ```
 
 ### ❗️ Important Configuration Notes
 
-  * **Ranoz.gg**: No API key is needed.
+  * **Ranoz.gg**: No API key is needed for anonymous uploads.
   * **SourceForge SSH Key**: See the **Troubleshooting** section below for the *required* steps to set up your SSH key. This prevents the script from stopping to ask for a password.
-  * **SourceForge Project Name**: Use your project's **UNIX name** (the one in the URL, e.g., `aosp-byimsleep`), not its display title.
+  * **SourceForge Path**: The path must be the full "Project Shell" path, starting with `/home/frs/project/`. Make sure the folder (e.g., `Releases`) already exists on SourceForge\!
 
 ## 🚀 Usage
 
@@ -92,7 +90,7 @@ This is the most common issue. It means your SSH key is not set up correctly. So
 
 Here is the definitive fix.
 
-### The Easiest Fix: Create the Key Correctly
+### Part 1: Generate and Add Your SSH Key
 
 Follow these steps to generate a new, correct key in the right location and **without a passphrase**.
 
@@ -100,16 +98,16 @@ Follow these steps to generate a new, correct key in the right location and **wi
     Run the following command. The `-f` flag forces the key to be saved directly inside the correct `~/.ssh/` folder.
 
     ```bash
-    # Ganti "manusiabiasa@aosp-byimsleep" dengan email Anda jika perlu
-    ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -C "manusiabiasa@aosp-byimsleep"
+    # You can replace the comment with your email if you want
+    ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -C "my-upload-server-key"
     ```
 
-2.  **Set Passphrase (PENTING):**
+2.  **Set Passphrase (IMPORTANT):**
     The command will ask you for a passphrase. To make the script automatic, you **must** leave this blank.
 
     ```
-    Enter passphrase (empty for no passphrase): <-- TEKAN ENTER
-    Enter same passphrase again: <-- TEKAN ENTER LAGI
+    Enter passphrase (empty for no passphrase): <-- PRESS ENTER
+    Enter same passphrase again: <-- PRESS ENTER AGAIN
     ```
 
     (If it says `~/.ssh/id_ed25519 already exists. Overwrite (y/n)?`, press `y` and Enter, then continue).
@@ -126,12 +124,16 @@ Follow these steps to generate a new, correct key in the right location and **wi
       * **Remove any old/wrong keys** you were trying to add.
       * **Paste** your new key into the text box and click "Add".
 
-4.  **Test the Connection:**
-    Run this test command using your *own* username and project name. If it's successful, it will **not** ask for a password.
+### Part 2: Test the Connection
 
-    ```bash
-    # Ganti dengan username dan project Anda
-    ssh -T manusiabiasa,aosp-byimsleep@frs.sourceforge.net
-    ```
+Run this *new* test command. It connects as your user to the shell server.
 
-After this, your `upload.sh` script will run without asking for a password.
+```bash
+# Replace 'your_username' with your actual SourceForge username
+ssh -T your_username@frs.sourceforge.net
+```
+
+If it's successful, it will **not** ask for a password and will likely show you a welcome message. Once this test works, your `upload.sh` script will also work.
+
+```
+```
