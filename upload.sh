@@ -12,7 +12,7 @@ SOURCEFORGE_PROJECT="aosp-byimsleep"
 SOURCEFORGE_FOLDER_PATH="/home/pfs/public/MyReleases" 
 
 # ==== Check dependencies ====
-# Menambahkan 'scp' ke pemeriksaan
+# Dependensi: curl (internet), jq (parsing json), scp (sourceforge)
 for cmd in curl jq scp; do
     if ! command -v "$cmd" >/dev/null 2>&1; then
         echo "❌ '$cmd' is not installed. Please install it."
@@ -87,6 +87,28 @@ for FILE in "$@"; do
     else
         echo "❌ Upload to Gofile failed:"
         cat /tmp/gofileresp.json
+    fi
+
+    # === Upload to Ranoz.gg ===
+    echo "→ Ranoz.gg:"
+    FILE_NAME=$(basename "$FILE")
+    FILE_SIZE=$(stat -c %s "$FILE")
+    RANOZ_META=$(curl -s -X POST https://ranoz.gg/api/v1/files/upload_url \
+        -H "Content-Type: application/json" \
+        -d "{\"filename\":\"$FILE_NAME\",\"size\":$FILE_SIZE}")
+    UPLOAD_URL=$(echo "$RANOZ_META" | jq -r '.data.upload_url')
+    FILE_URL=$(echo "$RANOZ_META" | jq -r '.data.url')
+    if [ "$UPLOAD_URL" != "null" ] && [ "$FILE_URL" != "null" ]; then
+        {
+            # Unggah file mentah menggunakan URL yang didapat
+            curl -s -X PUT "$UPLOAD_URL" --upload-file "$FILE" -H "Content-Length: $FILE_SIZE" -o /dev/null
+        } &
+        PID=$!
+        progress_spinner $PID
+        echo "✅ Ranoz.gg: $FILE_URL"
+    else
+        echo "❌ Upload to Ranoz.gg failed:"
+        echo "$RANOZ_META"
     fi
 
     # === Upload to SourceForge (via scp) ===
