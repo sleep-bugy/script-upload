@@ -31,7 +31,7 @@ sudo apt install curl jq scp
 1.  Download the script from the repository:
 
     ```bash
-    wget https://raw.githubusercontent.com/sleep-bugy/script-upload/refs/heads/main/upload.sh
+    wget https://raw.githubusercontent.com/sleep-bugy/script-upload/refs/heads/main/master/upload.sh
     ```
 
 2.  Make the script executable:
@@ -64,8 +64,8 @@ SOURCEFORGE_FOLDER_PATH="/home/pfs/public/MyReleases"
 
 ### ❗️ Important Configuration Notes
 
-  * **Ranoz.gg**: No API key is needed for Ranoz.gg; it works anonymously.
-  * **SourceForge SSH Key**: To prevent `scp` from asking for your password every time, it is highly recommended to [set up an SSH Key with your SourceForge account](https://sourceforge.net/p/forge/documentation/SSH%20Keys/).
+  * **Ranoz.gg**: No API key is needed.
+  * **SourceForge SSH Key**: See the **Troubleshooting** section below for the *required* steps to set up your SSH key. This prevents the script from stopping to ask for a password.
   * **SourceForge Project Name**: Use your project's **UNIX name** (the one in the URL, e.g., `aosp-byimsleep`), not its display title.
 
 ## 🚀 Usage
@@ -80,42 +80,58 @@ Once configured, you can run the script with any file(s) as arguments.
 
 ### Example 2: Upload a ROM release from an AOSP build
 
-This will find all `.zip` files within subdirectories of the `product` folder and upload them one by one.
-
 ```bash
 ./upload.sh ~/yourproject/out/target/product/*/*.zip
 ```
 
-### Example 3: Upload two specific files
-
-```bash
-./upload.sh rom-v1.zip rom-v2.zip
-```
-
 -----
 
-**Pro-Tip**: Place the `upload.sh` file somewhere in your system's `PATH` (like `/usr/local/bin`) to call it from any directory without needing `./`.
+## ⚠️ Troubleshooting: `scp` / SourceForge asks for a password
 
---------------------------------------------------------------------------------
+This is the most common issue. It means your SSH key is not set up correctly. SourceForge's file servers **do not accept passwords** for `scp`; they **only** accept SSH keys.
 
-1.  **Di Server Baru:** Buat kunci SSH baru.
+Here is the definitive fix.
+
+### The Easiest Fix: Create the Key Correctly
+
+Follow these steps to generate a new, correct key in the right location and **without a passphrase**.
+
+1.  **Generate the New Key:**
+    Run the following command. The `-f` flag forces the key to be saved directly inside the correct `~/.ssh/` folder.
 
     ```bash
-    ssh-keygen -t ed25519 -C "email-anda-di-server-baru@example.com"
+    # Ganti "manusiabiasa@aosp-byimsleep" dengan email Anda jika perlu
+    ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -C "manusiabiasa@aosp-byimsleep"
     ```
 
-    (Tekan Enter 3x untuk menerima default & tanpa passphrase).
+2.  **Set Passphrase (PENTING):**
+    The command will ask you for a passphrase. To make the script automatic, you **must** leave this blank.
 
-2.  **Di Server Baru:** Tampilkan kunci publik yang baru dibuat.
+    ```
+    Enter passphrase (empty for no passphrase): <-- TEKAN ENTER
+    Enter same passphrase again: <-- TEKAN ENTER LAGI
+    ```
+
+    (If it says `~/.ssh/id_ed25519 already exists. Overwrite (y/n)?`, press `y` and Enter, then continue).
+
+3.  **Add the New Key to SourceForge:**
+    First, display the new public key in your terminal:
 
     ```bash
     cat ~/.ssh/id_ed25519.pub
     ```
 
-3.  **Salin** seluruh teks kunci publik yang baru itu.
+      * Copy the *entire output* of this command (it starts with `ssh-ed25519...`).
+      * Go to your [SourceForge SSH Keys settings](https://sourceforge.net/auth/shell_services).
+      * **Remove any old/wrong keys** you were trying to add.
+      * **Paste** your new key into the text box and click "Add".
 
-4.  **Buka Akun SourceForge:** Pergi ke halaman [Account Settings \> SSH Keys](https://sourceforge.net/auth/shell_services).
+4.  **Test the Connection:**
+    Run this test command using your *own* username and project name. If it's successful, it will **not** ask for a password.
 
-5.  **Tempel (Paste)** kunci publik *baru* itu di kotak teks, **di bawah kunci Anda yang lama**. Lalu klik "Add".
+    ```bash
+    # Ganti dengan username dan project Anda
+    ssh -T manusiabiasa,aosp-byimsleep@frs.sourceforge.net
+    ```
 
-Selesai. Sekarang server baru Anda juga dipercaya oleh SourceForge dan bisa menjalankan skrip `upload.sh` tanpa masalah.
+After this, your `upload.sh` script will run without asking for a password.
