@@ -1,6 +1,6 @@
 # 🚀 Multi-Host Uploader Script
 
-> A simple bash script to upload file releases (like ROMs) to **Pixeldrain**, **Gofile**, and **SourceForge** simultaneously.
+> A simple bash script to upload file releases (like ROMs) to **Pixeldrain**, **Gofile**, **Ranoz.gg**, and **SourceForge** simultaneously.
 
 This script is designed to save time by automating the upload process to multiple hosts directly from your terminal.
 
@@ -8,6 +8,7 @@ This script is designed to save time by automating the upload process to multipl
 
   * 💧 **Pixeldrain**: Uploads files using your API key.
   * 📄 **Gofile**: Automatically finds the best available server and uploads.
+  * ⚡ **Ranoz.gg**: Uploads via their high-speed API.
   * 📦 **SourceForge**: Uploads release files to your project's File Release System (FRS) using `scp`.
 
 ## ⚙️ Prerequisites
@@ -63,6 +64,7 @@ SOURCEFORGE_FOLDER_PATH="/home/pfs/public/MyReleases"
 
 ### ❗️ Important Configuration Notes
 
+  * **Ranoz.gg**: No API key is needed for Ranoz.gg; it works anonymously.
   * **SourceForge SSH Key**: To prevent `scp` from asking for your password every time, it is highly recommended to [set up an SSH Key with your SourceForge account](https://sourceforge.net/p/forge/documentation/SSH%20Keys/).
   * **SourceForge Project Name**: Use your project's **UNIX name** (the one in the URL, e.g., `aosp-byimsleep`), not its display title.
 
