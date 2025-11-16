@@ -5,11 +5,9 @@
 PIXELDRAIN_API_KEY="e2782305-178a-4564-bcf3-12c37669ef13"
 
 # ❗️ GANTI DENGAN KONFIGURASI SOURCEFORGE ANDA ❗️
-# Ganti 'namauser' dan 'namaproyek' Anda di SourceForge
 SOURCEFORGE_USER="manusiabiasa"
-SOURCEFORGE_PROJECT="aosp-byimsleep"
-# Path di server SourceForge (selalu mulai dengan /home/pfs/public/)
-SOURCEFORGE_FOLDER_PATH="/home/pfs/public/Releases" 
+# Gunakan path yang Anda temukan, TANPA tanda ':' di awal
+SOURCEFORGE_SHELL_PATH="/home/frs/project/aosp-byimsleep/Releases"
 
 # ==== Check dependencies ====
 # Dependensi: curl (internet), jq (parsing json), scp (sourceforge)
@@ -114,7 +112,7 @@ for FILE in "$@"; do
     # === Upload to SourceForge (via scp) ===
     echo "→ SourceForge (scp):"
     # scp akan menampilkan progresnya sendiri
-    scp "$FILE" "${SOURCEFORGE_USER},${SOURCEFORGE_PROJECT}@frs.sourceforge.net:${SOURCEFORGE_FOLDER_PATH}/$(basename "$FILE")"
+    scp "$FILE" "${SOURCEFORGE_USER}@frs.sourceforge.net:${SOURCEFORGE_SHELL_PATH}/$(basename "$FILE")"
     if [ $? -eq 0 ]; then
         echo "✅ SourceForge: Upload successful (Path: ${SOURCEFORGE_FOLDER_PATH})"
     else
