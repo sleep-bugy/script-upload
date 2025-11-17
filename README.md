@@ -31,7 +31,7 @@ sudo apt install curl jq scp
 1.  Download the script:
 
     ```bash
-    wget [https://raw.githubusercontent.com/sleep-bugy/script-upload/refs/heads/main/master/upload.sh](https://raw.githubusercontent.com/sleep-bugy/script-upload/refs/heads/main/master/upload.sh)
+    wget https://raw.githubusercontent.com/sleep-bugy/script-upload/refs/heads/main/upload.sh
     ```
 
 2.  Make the script executable:
@@ -134,6 +134,3 @@ ssh -T your_username@frs.sourceforge.net
 ```
 
 If it's successful, it will **not** ask for a password and will likely show you a welcome message. Once this test works, your `upload.sh` script will also work.
-
-```
-```
