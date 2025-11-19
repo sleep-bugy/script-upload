@@ -4,14 +4,10 @@
 # ❗️ GANTI DENGAN API KEY PIXELDRAIN ANDA ❗️
 PIXELDRAIN_API_KEY="e2782305-178a-4564-bcf3-12c37669ef13"
 
-# ❗️ GANTI DENGAN KONFIGURASI SOURCEFORGE ANDA ❗️
-SOURCEFORGE_USER="manusiabiasa"
-# Gunakan path yang Anda temukan, TANPA tanda ':' di awal
-SOURCEFORGE_SHELL_PATH="/home/frs/project/aosp-byimsleep/Releases"
 
 # ==== Check dependencies ====
-# Dependensi: curl (internet), jq (parsing json), scp (sourceforge)
-for cmd in curl jq scp; do
+# Dependensi: curl (internet), jq (parsing json)
+for cmd in curl jq; do
     if ! command -v "$cmd" >/dev/null 2>&1; then
         echo "❌ '$cmd' is not installed. Please install it."
         echo "   (sudo apt install $cmd)"
@@ -107,16 +103,6 @@ for FILE in "$@"; do
     else
         echo "❌ Upload to Ranoz.gg failed:"
         echo "$RANOZ_META"
-    fi
-
-    # === Upload to SourceForge (via scp) ===
-    echo "→ SourceForge (scp):"
-    # scp akan menampilkan progresnya sendiri
-    scp "$FILE" "${SOURCEFORGE_USER}@frs.sourceforge.net:${SOURCEFORGE_SHELL_PATH}/$(basename "$FILE")"
-    if [ $? -eq 0 ]; then
-        echo "✅ SourceForge: Upload successful (Path: ${SOURCEFORGE_FOLDER_PATH})"
-    else
-        echo "❌ Upload to SourceForge failed."
     fi
 
 done
